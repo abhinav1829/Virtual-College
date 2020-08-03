@@ -1,0 +1,11 @@
+mat-grid-list {
+  height: 85%;
+  margin: 15px
+}
+
+.inside-tile {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}

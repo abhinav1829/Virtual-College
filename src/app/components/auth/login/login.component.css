@@ -1,0 +1,9 @@
+mat-grid-list {
+    height: 85%;
+    margin: 15px
+}
+
+form {
+  display: flex;
+  flex-flow: column nowrap;
+}

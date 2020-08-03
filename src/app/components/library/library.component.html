@@ -1,0 +1,19 @@
+<mat-toolbar>
+    <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+    <a mat-button routerLink="issue-status">LIBRARY</a>
+    <button mat-button type="button" (click)="onLogout()">Logout</button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+    
+    <mat-sidenav #sidenav mode="over">
+        <mat-nav-list (click)="sidenav.toggle()">
+            <a mat-list-item routerLink="issue-status">Issue Status</a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

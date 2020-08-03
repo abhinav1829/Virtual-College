@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "vc-313": {
+      "hosting": {
+        "virtual-college": [
+          "vc-313"
+        ]
+      }
+    }
+  }
+}
