@@ -1,0 +1,33 @@
+mat-grid-list {
+  margin: 16px;
+}
+mat-card{
+  height: 100%;
+  width: 100%;
+}
+
+mat-card-header{
+  height: 20%;
+  width: 100%;
+  align-items: center;
+}
+
+mat-card-subtitle{
+  margin: 0;
+}
+
+.mat-card-image{
+  height: 50%;
+  width: 100%;
+  margin: 0;
+}
+
+mat-card-content{
+  height: 10%;
+  width: 100%;
+}
+
+mat-card-actions{
+  height: 20%;
+  width: 100%;
+}

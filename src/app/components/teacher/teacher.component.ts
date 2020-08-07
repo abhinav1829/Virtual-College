@@ -5,16 +5,14 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-teacher',
   templateUrl: './teacher.component.html',
-  styleUrls: ['./teacher.component.css']
+  styleUrls: ['./teacher.component.css'],
 })
 export class TeacherComponent {
+  constructor(private authService: AuthService, private router: Router) {}
 
-  constructor(private authService:AuthService,private router:Router) { }
-
-  onLogout(){
+  onLogout() {
     this.authService.logout().then(() => {
       this.router.navigate(['auth']);
     });
   }
-
 }

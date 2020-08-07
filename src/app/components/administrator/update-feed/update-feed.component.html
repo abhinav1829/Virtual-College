@@ -1,1 +1,6 @@
-<p>update-feed works!</p>
+<form [formGroup]="feedForm" (ngSubmit)="onSubmit()">
+    <input type="text" formControlName="head" placeholder="head">
+    <textarea type="text" formControlName="body" placeholder="body"></textarea>
+    <input type="text" formControlName="back" placeholder="back">
+    <input type="submit" value="Submit">
+</form>

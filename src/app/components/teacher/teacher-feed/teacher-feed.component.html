@@ -1,1 +1,19 @@
-<p>teacher-feed works!</p>
+<mat-grid-list cols="3" gutterSize="16px">
+  <mat-grid-tile *ngFor="let article of articles" class="mat-elevation-z2">
+    <mat-card>
+      <mat-card-header>
+        <img mat-card-avatar [src]="article.back" [alt]="article.back">
+        <mat-card-title>{{article.head}}</mat-card-title>
+        <mat-card-subtitle>{{article.date|date}}</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image [src]="article.back" [alt]="article.back">
+      <mat-card-content>
+        <p>{{article.body}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

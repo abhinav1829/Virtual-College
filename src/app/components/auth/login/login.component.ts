@@ -62,13 +62,25 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getErrorMessage() {
-    if (this.loginForm.get('email').hasError('required')) {
-      return 'You must enter a value';
+  getErrorMessage(i: string) {
+    switch (i) {
+      case 'email':
+        if (this.loginForm.get('email').hasError('required')) {
+          return 'You must enter a value';
+        } else if (this.loginForm.get('email').hasError('email')) {
+          return 'Not a valid email';
+        } else {
+          return '';
+        }
+      case 'password':
+        if (this.loginForm.get('password').hasError('required')) {
+          return 'You must enter a value';
+        } else {
+          return '';
+        }
+      default:
+        break;
     }
-    return this.loginForm.get('email').hasError('email')
-      ? 'Not a valid email'
-      : '';
   }
 
   tile_select(i: string) {
@@ -109,10 +121,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
   onSubmit(user: string) {
     this.isLoading = true;
     this.authService
-      .login(this.loginForm.value['email'], this.loginForm.value['password'])
-      .then(() => {
+      .login(
+        user,
+        this.loginForm.value['email'],
+        this.loginForm.value['password']
+      )
+      .then(
+        () => {
+          this.router.navigate([user]);
+        },
+        (error) => {
+          alert(error);
+        }
+      )
+      .finally(() => {
         this.isLoading = false;
-        this.router.navigate([user]);
       });
   }
 }

@@ -12,9 +12,11 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -52,12 +54,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './components/auth/login/login.component';
 import { ContactUsComponent } from './components/auth/contact-us/contact-us.component';
 import { AboutComponent } from './components/auth/about/about.component';
+import { DatePipe } from './pipes/date.pipe';
 
 @NgModule({
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    AngularFireDatabaseModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
@@ -73,7 +77,8 @@ import { AboutComponent } from './components/auth/about/about.component';
     MatRippleModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCardModule,
   ],
   declarations: [
     AppComponent,
@@ -108,7 +113,8 @@ import { AboutComponent } from './components/auth/about/about.component';
     IssueStatusComponent,
     AuthComponent,
     AboutComponent,
-    LoginComponent
+    LoginComponent,
+    DatePipe,
   ],
   providers: [],
   bootstrap: [AppComponent],
