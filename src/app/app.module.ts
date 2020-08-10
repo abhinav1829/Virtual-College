@@ -13,6 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -55,6 +57,7 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { ContactUsComponent } from './components/auth/contact-us/contact-us.component';
 import { AboutComponent } from './components/auth/about/about.component';
 import { DatePipe } from './pipes/date.pipe';
+import { DialogComponent } from './components/shared/dialog/dialog.component';
 
 @NgModule({
   imports: [
@@ -79,6 +82,8 @@ import { DatePipe } from './pipes/date.pipe';
     MatInputModule,
     MatProgressSpinnerModule,
     MatCardModule,
+    MatDialogModule,
+    MatTabsModule,
   ],
   declarations: [
     AppComponent,
@@ -115,6 +120,7 @@ import { DatePipe } from './pipes/date.pipe';
     AboutComponent,
     LoginComponent,
     DatePipe,
+    DialogComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

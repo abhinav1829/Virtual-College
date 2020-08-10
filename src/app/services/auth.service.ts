@@ -44,11 +44,11 @@ export class AuthService {
     }
   }
 
-  timer(ms: number) {
+  timer(s: number) {
     return new Promise((_resolve, reject) => {
       setTimeout(() => {
-        reject('Timed out in ' + ms + 'ms.');
-      }, ms);
+        reject('Timed out in ' + s + 's.');
+      }, s * 1000);
     });
   }
 
@@ -94,7 +94,7 @@ export class AuthService {
   login(usertype: string, email: string, password: string) {
     return Promise.race([
       this.signIn(usertype, email, password),
-      this.timer(7000),
+      this.timer(7),
     ]);
   }
 
