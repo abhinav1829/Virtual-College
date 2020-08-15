@@ -1,24 +1,4 @@
 <mat-tab-group [(selectedIndex)]="tabSelect">
-  <mat-tab label="Add">
-    <form [formGroup]="feedForm" (ngSubmit)="onSubmit()" class="mat-elevation-z8">
-      <mat-form-field>
-        <input matInput type="text" formControlName="head" placeholder="heading">
-      </mat-form-field>
-      <mat-form-field>
-        <textarea matInput type="text" formControlName="body" placeholder="summary" rows="3"></textarea>
-      </mat-form-field>
-      <mat-form-field>
-        <textarea matInput type="text" formControlName="details" placeholder="details" rows="7"></textarea>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="text" formControlName="back" placeholder="image">
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput type="text" formControlName="link" placeholder="links separated by ' '">
-      </mat-form-field>
-      <button mat-raised-button type="submit">Add Article</button>
-    </form>
-  </mat-tab>
   <mat-tab label="View">
     <mat-grid-list cols="3" gutterSize="16px">
       <mat-grid-tile *ngFor="let article of articles;let i = index" class="mat-elevation-z2">
@@ -38,5 +18,25 @@
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
+  </mat-tab>
+  <mat-tab label="Add">
+    <form [formGroup]="feedForm" (ngSubmit)="onSubmit()" class="mat-elevation-z8">
+      <mat-form-field>
+        <input matInput type="text" formControlName="head" placeholder="heading">
+      </mat-form-field>
+      <mat-form-field>
+        <textarea matInput type="text" formControlName="body" placeholder="summary" rows="3"></textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <textarea matInput type="text" formControlName="details" placeholder="details" rows="7"></textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="back" placeholder="image">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="link" placeholder="links separated by ' '">
+      </mat-form-field>
+      <button mat-raised-button type="submit">Add Article</button>
+    </form>
   </mat-tab>
 </mat-tab-group>

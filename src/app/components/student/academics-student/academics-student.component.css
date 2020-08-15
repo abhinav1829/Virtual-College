@@ -1,0 +1,11 @@
+mat-table {
+  margin: 16px;
+}
+
+mat-sort-header-sorted {
+  color: black;
+}
+
+mat-footer-row {
+  font-weight: bold;
+}

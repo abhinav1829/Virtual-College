@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AppRoutingModule } from './app-routing.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,12 +16,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StudentComponent } from './components/student/student.component';
 import { TeacherComponent } from './components/teacher/teacher.component';
@@ -44,11 +46,6 @@ import { StudentCommunicationComponent } from './components/teacher/student-comm
 import { AcademicsTeacherComponent } from './components/teacher/academics-teacher/academics-teacher.component';
 import { AcademicsStudentComponent } from './components/student/academics-student/academics-student.component';
 import { TeacherCommunicationComponent } from './components/student/teacher-communication/teacher-communication.component';
-import { SetAttendanceComponent } from './components/teacher/academics-teacher/set-attendance/set-attendance.component';
-import { SyllabusScheduleTeacherComponent } from './components/teacher/academics-teacher/syllabus-schedule-teacher/syllabus-schedule-teacher.component';
-import { SyllabusScheduleStudentComponent } from './components/student/academics-student/syllabus-schedule-student/syllabus-schedule-student.component';
-import { GetAttendanceComponent } from './components/student/academics-student/get-attendance/get-attendance.component';
-import { AcademicsReportComponent } from './components/student/academics-student/academics-report/academics-report.component';
 import { IssueStatusComponent } from './components/library/issue-status/issue-status.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -58,6 +55,7 @@ import { ContactUsComponent } from './components/auth/contact-us/contact-us.comp
 import { AboutComponent } from './components/auth/about/about.component';
 import { DatePipe } from './pipes/date.pipe';
 import { DialogComponent } from './components/shared/dialog/dialog.component';
+import { AttendancePipe } from './pipes/attendance.pipe';
 
 @NgModule({
   imports: [
@@ -84,6 +82,8 @@ import { DialogComponent } from './components/shared/dialog/dialog.component';
     MatCardModule,
     MatDialogModule,
     MatTabsModule,
+    MatTableModule,
+    MatSortModule,
   ],
   declarations: [
     AppComponent,
@@ -110,17 +110,13 @@ import { DialogComponent } from './components/shared/dialog/dialog.component';
     AcademicsTeacherComponent,
     AcademicsStudentComponent,
     TeacherCommunicationComponent,
-    SetAttendanceComponent,
-    SyllabusScheduleTeacherComponent,
-    SyllabusScheduleStudentComponent,
-    GetAttendanceComponent,
-    AcademicsReportComponent,
     IssueStatusComponent,
     AuthComponent,
     AboutComponent,
     LoginComponent,
     DatePipe,
     DialogComponent,
+    AttendancePipe,
   ],
   providers: [],
   bootstrap: [AppComponent],

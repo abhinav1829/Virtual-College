@@ -1,1 +1,49 @@
-<p>academics-student works!</p>
+<mat-tab-group>
+  <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+  <mat-tab label="Attendance">
+
+    <mat-table [dataSource]="getDataSource()" matSort class="mat-elevation-z2">
+
+      <!-- Subject Name Definition -->
+      <ng-container matColumnDef="sname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Subject </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.sname}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+      </ng-container>
+
+      <!-- Present Count Definition -->
+      <ng-container matColumnDef="present">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Present </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.present}} </mat-cell>
+      </ng-container>
+
+      <!-- Total Count Definition -->
+      <ng-container matColumnDef="total">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Total </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.total}} </mat-cell>
+      </ng-container>
+
+      <!-- Percentage Definition -->
+      <ng-container matColumnDef="percentage">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Percentage </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.percentage|attendance}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalPercentage()|attendance}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Header and Row Declarations -->
+      <mat-header-row *matHeaderRowDef="['sname', 'present', 'total','percentage']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['sname', 'present', 'total','percentage']"></mat-row>
+      <mat-footer-row *matFooterRowDef="['sname', 'percentage']"></mat-footer-row>
+    </mat-table>
+
+  </mat-tab>
+  <mat-tab label="Reports">
+    <h1>Reports</h1>
+  </mat-tab>
+  <mat-tab label="Schedule">
+    <h1>Schedule</h1>
+  </mat-tab>
+  <mat-tab label="Syllabus">
+    <h1>Syllabus</h1>
+  </mat-tab>
+</mat-tab-group>

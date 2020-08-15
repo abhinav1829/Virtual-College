@@ -7,6 +7,7 @@ export class Article {
   details: string[];
   link: string[];
   date: string;
+
   constructor(
     head: string,
     body: string,

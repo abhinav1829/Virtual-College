@@ -31,6 +31,10 @@ export class UpdateFeedComponent implements OnInit {
     });
   }
 
+  openDialog(i: number) {
+    this.dialog.open(DialogComponent, { data: this.articles[i] });
+  }
+
   onSubmit() {
     if (this.feedForm.valid) {
       this.feedService
@@ -58,10 +62,6 @@ export class UpdateFeedComponent implements OnInit {
     } else {
       alert('Invalid form!');
     }
-  }
-
-  openDialog(i: number) {
-    this.dialog.open(DialogComponent, { data: this.articles[i] });
   }
 
   onDeleteArticle(i: number) {

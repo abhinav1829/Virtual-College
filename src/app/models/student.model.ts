@@ -1,10 +1,24 @@
 export class Student {
   id: number;
-  fname: string;
-  lname: string;
-  constructor(id: number, fname: string, lname: string) {
+  name: string;
+  email: string;
+  department: number;
+  semester: number;
+  attendance: { sname: string; present: number }[];
+
+  constructor(
+    id: number,
+    name: string,
+    email: string,
+    department: number,
+    semester: number,
+    attendance: { sname: string; present: number }[]
+  ) {
     this.id = id;
-    this.fname = fname;
-    this.lname = lname;
+    this.name = name;
+    this.email = email;
+    this.department = department;
+    this.semester = semester;
+    this.attendance = attendance;
   }
 }

@@ -1,9 +1,1 @@
 <p>student-feed works!</p>
-<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-  <input type="email" formControlName="email" required>
-  <input type="text" formControlName="password" required>
-  <select formControlName="usertype">
-    <option *ngFor="let user of users" [value]="user">{{user}}</option>
-  </select>
-  <input type="submit" value="Add user">
-</form>

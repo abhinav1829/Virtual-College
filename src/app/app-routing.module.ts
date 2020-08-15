@@ -12,9 +12,6 @@ import { FeesPaymentComponent } from './components/student/fees-payment/fees-pay
 import { OnlineTestsComponent } from './components/student/online-tests/online-tests.component';
 import { StudentFeedComponent } from './components/student/student-feed/student-feed.component';
 import { TeacherCommunicationComponent } from './components/student/teacher-communication/teacher-communication.component';
-import { AcademicsReportComponent } from './components/student/academics-student/academics-report/academics-report.component';
-import { GetAttendanceComponent } from './components/student/academics-student/get-attendance/get-attendance.component';
-import { SyllabusScheduleStudentComponent } from './components/student/academics-student/syllabus-schedule-student/syllabus-schedule-student.component';
 import { FeesGenerationComponent } from './components/administrator/fees-generation/fees-generation.component';
 import { SalaryDistributionComponent } from './components/administrator/salary-distribution/salary-distribution.component';
 import { UpdateFeedComponent } from './components/administrator/update-feed/update-feed.component';
@@ -25,13 +22,12 @@ import { DoubtAnsweringComponent } from './components/teacher/doubt-answering/do
 import { SalaryComponent } from './components/teacher/salary/salary.component';
 import { TestBroadcastComponent } from './components/teacher/test-broadcast/test-broadcast.component';
 import { StudentCommunicationComponent } from './components/teacher/student-communication/student-communication.component';
-import { SetAttendanceComponent } from './components/teacher/academics-teacher/set-attendance/set-attendance.component';
-import { SyllabusScheduleTeacherComponent } from './components/teacher/academics-teacher/syllabus-schedule-teacher/syllabus-schedule-teacher.component';
 import { IssueStatusComponent } from './components/library/issue-status/issue-status.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { AboutComponent } from './components/auth/about/about.component';
 import { ContactUsComponent } from './components/auth/contact-us/contact-us.component';
 import { AuthGuard } from './guards/auth.guard';
+import { AcademicsTeacherComponent } from './components/teacher/academics-teacher/academics-teacher.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -69,15 +65,7 @@ const routes: Routes = [
       { path: 'fees', component: FeesPaymentComponent },
       { path: 'test', component: OnlineTestsComponent },
       { path: 'com', component: TeacherCommunicationComponent },
-      {
-        path: 'academics',
-        component: AcademicsStudentComponent,
-        children: [
-          { path: 'report', component: AcademicsReportComponent },
-          { path: 'attendance', component: GetAttendanceComponent },
-          { path: 'syllabus', component: SyllabusScheduleStudentComponent },
-        ],
-      },
+      { path: 'academics', component: AcademicsStudentComponent },
     ],
   },
   {
@@ -92,14 +80,7 @@ const routes: Routes = [
       { path: 'test', component: TestBroadcastComponent },
       { path: 'salary', component: SalaryComponent },
       { path: 'com', component: StudentCommunicationComponent },
-      {
-        path: 'academics',
-        component: AcademicsStudentComponent,
-        children: [
-          { path: 'attendance', component: SetAttendanceComponent },
-          { path: 'syllabus', component: SyllabusScheduleTeacherComponent },
-        ],
-      },
+      { path: 'academics', component: AcademicsTeacherComponent },
     ],
   },
   {
@@ -115,6 +96,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

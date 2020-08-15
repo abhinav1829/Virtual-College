@@ -27,7 +27,7 @@ export class AuthGuard
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.authStatus;
+    return this.authService.getAuthStatus();
   }
   canDeactivate(
     component: unknown,

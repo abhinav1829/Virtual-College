@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  authStatus: boolean;
+  private authStatus: boolean;
+  private id: string;
 
   constructor(
     private fireAuth: AngularFireAuth,
-    private fireDatabase: AngularFireDatabase,
-    private router: Router
+    private fireDatabase: AngularFireDatabase
   ) {
     this.authStatus = false;
     this.fireAuth.onAuthStateChanged((user) => {
@@ -24,24 +23,34 @@ export class AuthService {
     });
   }
 
+  getAuthStatus(){
+    return this.authStatus;
+  }
+
+  getID(){
+    return this.id;
+  }
+
   autoLogin() {
-    let user: {
-      usertype: string;
-      email: string;
-      password: string;
-    } = JSON.parse(localStorage.getItem('userData'));
-    if (user) {
-      this.login(user.usertype, user.email, user.password).then(
-        () => {
-          this.router.navigate([user.usertype]);
-        },
-        (error) => {
-          alert(error);
-        }
-      );
-    } else {
-      return;
-    }
+    return new Promise((resolve, reject) => {
+      let user: {
+        usertype: string;
+        email: string;
+        password: string;
+      } = JSON.parse(localStorage.getItem('userData'));
+      if (user) {
+        this.login(user.usertype, user.email, user.password).then(
+          () => {
+            resolve(user.usertype);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      } else {
+        reject('No login found.');
+      }
+    });
   }
 
   timer(s: number) {
@@ -64,6 +73,7 @@ export class AuthService {
               this.fireAuth.signInWithEmailAndPassword(email, password).then(
                 () => {
                   this.authStatus = true;
+                  this.id = childSnapshot.key;
                   localStorage.setItem(
                     'userData',
                     JSON.stringify({

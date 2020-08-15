@@ -10,27 +10,12 @@ export class FeedService {
   feedChanged = new EventEmitter<Article[]>();
 
   constructor(private fireDatabase: AngularFireDatabase) {
-    this.syncFeed();
-  }
-
-  syncFeed() {
-    this.articles = [];
-    this.fireDatabase.database.ref('/articles').once(
-      'value',
-      (snapshot) => {
-        snapshot.forEach((article) => {
-          this.articles.push({
-            head: article.child('head').val(),
-            body: article.child('body').val(),
-            back: article.child('back').val(),
-            details: article.child('details').val(),
-            link: article.child('link').val(),
-            date: article.key,
-          });
-        });
+    this.syncFeed().then(
+      (articles: Article[]) => {
+        this.articles = articles;
       },
       (error) => {
-        console.log(error);
+        alert(error);
       }
     );
   }
@@ -39,7 +24,33 @@ export class FeedService {
     return this.articles;
   }
 
-  async addArticle(article: Article) {
+  syncFeed() {
+    return new Promise((resolve, reject) => {
+      let articles = [];
+      this.fireDatabase.database.ref('/articles').once(
+        'value',
+        (snapshot) => {
+          snapshot.forEach((article) => {
+            articles.push({
+              head: article.child('head').val(),
+              body: article.child('body').val(),
+              back: article.child('back').val(),
+              details: article.child('details').val(),
+              link: article.child('link').val(),
+              date: article.key,
+            });
+          });
+          this.feedChanged.emit(articles);
+          resolve(articles);
+        },
+        (error) => {
+          reject(error.message);
+        }
+      );
+    });
+  }
+
+  addArticle(article: Article) {
     return new Promise((resolve, reject) => {
       this.fireDatabase.database
         .ref('/articles/' + article.date)
@@ -52,9 +63,15 @@ export class FeedService {
         })
         .then(
           () => {
-            this.syncFeed();
-            this.feedChanged.emit(this.articles);
-            resolve('Article added.');
+            this.syncFeed().then(
+              (articles: Article[]) => {
+                this.articles = articles;
+                resolve('Article added.');
+              },
+              (error) => {
+                reject(error);
+              }
+            );
           },
           (error) => {
             reject(error);
@@ -63,16 +80,22 @@ export class FeedService {
     });
   }
 
-  async deleteArticle(i: number) {
+  deleteArticle(i: number) {
     return new Promise((resolve, reject) => {
       this.fireDatabase.database
         .ref('/articles/' + this.articles[i].date)
         .remove()
         .then(
           () => {
-            this.syncFeed();
-            this.feedChanged.emit(this.articles);
-            resolve('Article deleted.');
+            this.syncFeed().then(
+              (articles: Article[]) => {
+                this.articles = articles;
+                resolve('Article deleted.');
+              },
+              (error) => {
+                reject(error);
+              }
+            );
           },
           (error) => {
             reject(error);
