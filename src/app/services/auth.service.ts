@@ -7,7 +7,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 })
 export class AuthService {
   private authStatus: boolean;
-  private id: string;
+  id: string;
 
   constructor(
     private fireAuth: AngularFireAuth,
@@ -23,12 +23,8 @@ export class AuthService {
     });
   }
 
-  getAuthStatus(){
+  getAuthStatus() {
     return this.authStatus;
-  }
-
-  getID(){
-    return this.id;
   }
 
   autoLogin() {
@@ -44,6 +40,7 @@ export class AuthService {
             resolve(user.usertype);
           },
           (error) => {
+            localStorage.removeItem('userData');
             reject(error);
           }
         );

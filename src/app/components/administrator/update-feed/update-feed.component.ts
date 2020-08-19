@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormGroupDirective,
+} from '@angular/forms';
 import { FeedService } from 'src/app/services/feed.service';
 import { Article } from 'src/app/models/article.model';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
@@ -14,6 +19,7 @@ export class UpdateFeedComponent implements OnInit {
   tabSelect = 0;
   feedForm: FormGroup;
   articles: Article[];
+  @ViewChild(FormGroupDirective, { static: true }) formRef: FormGroupDirective;
 
   constructor(private feedService: FeedService, private dialog: MatDialog) {}
 
@@ -51,12 +57,12 @@ export class UpdateFeedComponent implements OnInit {
         )
         .then(
           (res) => {
-            this.feedForm.reset();
             console.log(res);
-            this.tabSelect++;
+            this.formRef.resetForm();
+            this.tabSelect--;
           },
           (error) => {
-            console.log(error);
+            alert(error);
           }
         );
     } else {
@@ -70,7 +76,7 @@ export class UpdateFeedComponent implements OnInit {
         console.log(res);
       },
       (error) => {
-        console.log(error);
+        alert(error);
       }
     );
   }
