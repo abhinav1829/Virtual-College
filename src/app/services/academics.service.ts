@@ -8,46 +8,41 @@ import { Student } from '../models/student.model';
   providedIn: 'root',
 })
 export class AcademicsService {
-  private student: Student;
-  private attendance: Attendance[];
-
   constructor(
     private fireDatabase: AngularFireDatabase,
     private authService: AuthService
-  ) {
-    this.syncData().then(
-      (student: Student) => {
-        this.student = student;
-        this.syncAttendance().then(
-          (attendance: Attendance[]) => {
-            this.attendance = attendance;
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
+  ) {}
 
   getAttendance() {
-    return this.attendance;
+    return new Promise((resolve, reject) => {
+      this.syncData().then(
+        (student: Student) => {
+          this.syncAttendance(student).then(
+            (attendance) => {
+              resolve(attendance);
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
   }
 
   syncData() {
     return new Promise((resolve, reject) => {
-      this.fireDatabase.database
-        .ref('/students/' + this.authService.getID())
-        .once(
-          'value',
-          (snapshot) => {
-            let a: { sname: string; present: number }[] = [];
-            snapshot.child('attendance').forEach((subject) => {
-              a.push({ sname: subject.key, present: subject.val() });
-            });
+      this.fireDatabase.database.ref('/students/' + this.authService.id).once(
+        'value',
+        (snapshot) => {
+          let a: { sname: string; present: number }[] = [];
+          snapshot.child('attendance').forEach((subject) => {
+            a.push({ sname: subject.key, present: subject.val() });
+          });
+          if (snapshot) {
             resolve(
               new Student(
                 snapshot.child('id').val(),
@@ -58,41 +53,50 @@ export class AcademicsService {
                 a
               )
             );
-          },
-          (error) => {
-            reject(error.message);
+          } else {
+            reject('Database fetch error.');
           }
-        );
+        },
+        (error) => {
+          reject(error.message);
+        }
+      );
     });
   }
 
-  syncAttendance() {
+  syncAttendance(student: Student) {
     return new Promise((resolve, reject) => {
       let attendance = [];
       this.fireDatabase.database
-        .ref(
-          '/subjects/' + this.student.department + '/' + this.student.semester
-        )
+        .ref('/subjects/' + student.department + '/' + student.semester)
         .orderByChild('sname')
         .once(
           'value',
           (snapshot) => {
-            let i = 0;
-            let a = this.student.attendance;
-            snapshot.forEach((subject) => {
-              attendance.push(
-                new Attendance(
-                  a[i].sname,
-                  a[i].present,
-                  subject.child('total').val()
-                )
-              );
-              i++;
-            });
-            if (attendance.length > 0) {
-              resolve(attendance);
+            let a = student.attendance;
+            if (a) {
+              let i = 0;
+              snapshot.forEach((subject) => {
+                if (typeof a[i] === 'undefined') {
+                  reject('Attendance sync error for ' + student.id + '.');
+                } else {
+                  attendance.push(
+                    new Attendance(
+                      a[i].sname,
+                      a[i].present,
+                      subject.child('total').val()
+                    )
+                  );
+                  i++;
+                }
+              });
+              if (i > 0) {
+                resolve(attendance);
+              } else {
+                reject('Attendance sync error for ' + student.id + '.');
+              }
             } else {
-              reject('Attendance not available for ' + this.student.id + '.');
+              reject('Attendance not available for ' + student.id + '.');
             }
           },
           (error) => {

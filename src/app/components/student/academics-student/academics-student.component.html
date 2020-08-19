@@ -1,8 +1,8 @@
 <mat-tab-group>
   <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
   <mat-tab label="Attendance">
-
-    <mat-table [dataSource]="getDataSource()" matSort class="mat-elevation-z2">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <mat-table *ngIf="!isLoading" [dataSource]="getDataSource()" matSort class="mat-elevation-z2">
 
       <!-- Subject Name Definition -->
       <ng-container matColumnDef="sname">
