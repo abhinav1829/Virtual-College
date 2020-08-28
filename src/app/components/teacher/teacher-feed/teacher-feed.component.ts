@@ -20,7 +20,9 @@ export class TeacherFeedComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.articles = this.feedService.getFeed();
+    this.feedService.getFeed().then((articles: Article[]) => {
+      this.articles = articles;
+    });
     this.feedService.feedChanged.subscribe((articles: Article[]) => {
       this.articles = articles;
     });

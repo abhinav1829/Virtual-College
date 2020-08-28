@@ -11,24 +11,31 @@ import { Attendance } from 'src/app/models/attendance.model';
 })
 export class AcademicsStudentComponent implements OnInit {
   isLoading: boolean;
+  hasError: boolean;
+  error: string;
   private attendance: Attendance[];
-  private dataSource: MatTableDataSource<Attendance>;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  private dataSource: MatTableDataSource<Attendance> = new MatTableDataSource<
+    Attendance
+  >();
+  @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
+    this.dataSource.sort = sort;
+  }
 
   constructor(private academicsService: AcademicsService) {}
 
   ngOnInit() {
     this.isLoading = true;
+    this.hasError = false;
     this.academicsService
       .getAttendance()
       .then(
         (attendance: Attendance[]) => {
           this.attendance = attendance;
-          this.dataSource = new MatTableDataSource(this.attendance);
-          this.dataSource.sort = this.sort;
+          this.dataSource = new MatTableDataSource<Attendance>(this.attendance);
         },
         (error) => {
-          alert(error);
+          this.hasError = true;
+          this.error = error;
         }
       )
       .finally(() => {

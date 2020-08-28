@@ -9,28 +9,39 @@ import { Student } from '../models/student.model';
 })
 export class AcademicsService {
   constructor(
-    private fireDatabase: AngularFireDatabase,
-    private authService: AuthService
+    private authService: AuthService,
+    private fireDatabase: AngularFireDatabase
   ) {}
 
-  getAttendance() {
-    return new Promise((resolve, reject) => {
-      this.syncData().then(
-        (student: Student) => {
-          this.syncAttendance(student).then(
-            (attendance) => {
-              resolve(attendance);
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-        },
-        (error) => {
-          reject(error);
-        }
-      );
+  timer(s: number) {
+    return new Promise((_resolve, reject) => {
+      setTimeout(() => {
+        reject('Timed out in ' + s + 's.');
+      }, s * 1000);
     });
+  }
+
+  getAttendance() {
+    return Promise.race([
+      this.timer(7),
+      new Promise((resolve, reject) => {
+        this.syncData().then(
+          (student: Student) => {
+            this.syncAttendance(student).then(
+              (attendance) => {
+                resolve(attendance);
+              },
+              (error) => {
+                reject(error);
+              }
+            );
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+      }),
+    ]);
   }
 
   syncData() {
@@ -42,20 +53,16 @@ export class AcademicsService {
           snapshot.child('attendance').forEach((subject) => {
             a.push({ sname: subject.key, present: subject.val() });
           });
-          if (snapshot) {
-            resolve(
-              new Student(
-                snapshot.child('id').val(),
-                snapshot.child('name').val(),
-                snapshot.child('email').val(),
-                snapshot.child('department').val(),
-                snapshot.child('semester').val(),
-                a
-              )
-            );
-          } else {
-            reject('Database fetch error.');
-          }
+          resolve(
+            new Student(
+              snapshot.child('id').val(),
+              snapshot.child('name').val(),
+              snapshot.child('email').val(),
+              snapshot.child('department').val(),
+              snapshot.child('semester').val(),
+              a
+            )
+          );
         },
         (error) => {
           reject(error.message);
@@ -74,30 +81,18 @@ export class AcademicsService {
           'value',
           (snapshot) => {
             let a = student.attendance;
-            if (a) {
-              let i = 0;
-              snapshot.forEach((subject) => {
-                if (typeof a[i] === 'undefined') {
-                  reject('Attendance sync error for ' + student.id + '.');
-                } else {
-                  attendance.push(
-                    new Attendance(
-                      a[i].sname,
-                      a[i].present,
-                      subject.child('total').val()
-                    )
-                  );
-                  i++;
-                }
-              });
-              if (i > 0) {
-                resolve(attendance);
-              } else {
-                reject('Attendance sync error for ' + student.id + '.');
-              }
-            } else {
-              reject('Attendance not available for ' + student.id + '.');
-            }
+            let i = 0;
+            snapshot.forEach((subject) => {
+              attendance.push(
+                new Attendance(
+                  a[i].sname,
+                  a[i].present,
+                  subject.child('total').val()
+                )
+              );
+              i++;
+            });
+            resolve(attendance);
           },
           (error) => {
             reject(error.message);

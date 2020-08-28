@@ -1,8 +1,5 @@
-:host ::ng-deep .mat-tab-header {
-  position: sticky;
-  top: 0;
-  background-color: #fafafa;
-  z-index: 3;
+mat-tab-group {
+  height: 100%;
 }
 
 mat-table {
@@ -15,4 +12,9 @@ mat-sort-header-sorted {
 
 mat-footer-row {
   font-weight: bold;
+}
+
+h1 {
+  margin: 16px;
+  padding: 16px;
 }

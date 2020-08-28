@@ -19,8 +19,8 @@
       </mat-grid-tile>
     </mat-grid-list>
   </mat-tab>
-  <mat-tab label="Add">
-    <form [formGroup]="feedForm" (ngSubmit)="onSubmit()" class="mat-elevation-z8">
+  <mat-tab label="Add Article">
+    <form [formGroup]="articleForm" (ngSubmit)="onArticleSubmit()" class="mat-elevation-z8">
       <mat-form-field>
         <input matInput type="text" formControlName="head" placeholder="heading">
       </mat-form-field>
@@ -37,6 +37,17 @@
         <input matInput type="text" formControlName="link" placeholder="links separated by ' '">
       </mat-form-field>
       <button mat-raised-button type="submit">Add Article</button>
+    </form>
+  </mat-tab>
+  <mat-tab label="Add Circular">
+    <form [formGroup]="circularForm" (ngSubmit)="onCircularSubmit()" class="mat-elevation-z8">
+      <mat-form-field>
+        <input matInput type="text" formControlName="subject" placeholder="heading">
+      </mat-form-field>
+      <input type="file" (change)="detectFile($event)" style="margin-bottom: 16px;">
+      <mat-progress-bar mode="determinate" [value]="progress" *ngIf="progress > 0">
+      </mat-progress-bar>
+      <button mat-raised-button type="submit">Add Circular</button>
     </form>
   </mat-tab>
 </mat-tab-group>

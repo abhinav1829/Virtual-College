@@ -18,10 +18,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 
 import { AppComponent } from './app.component';
 import { StudentComponent } from './components/student/student.component';
@@ -63,6 +66,7 @@ import { AttendancePipe } from './pipes/attendance.pipe';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
+    AngularFireStorageModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
@@ -84,6 +88,8 @@ import { AttendancePipe } from './pipes/attendance.pipe';
     MatTabsModule,
     MatTableModule,
     MatSortModule,
+    MatExpansionModule,
+    MatProgressBarModule,
   ],
   declarations: [
     AppComponent,

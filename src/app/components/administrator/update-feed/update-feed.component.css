@@ -5,6 +5,13 @@
   z-index: 3;
 }
 
+mat-tab-group,
+::ng-deep .mat-tab-body-wrapper,
+mat-tab-body,
+.mat-tab-body-content {
+  height: 100%;
+}
+
 form {
   display: flex;
   flex-flow: column nowrap;

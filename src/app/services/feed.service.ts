@@ -1,6 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireStorage } from '@angular/fire/storage';
+
 import { Article } from '../models/article.model';
+import { Circular } from '../models/circular.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,19 +12,22 @@ export class FeedService {
   private articles: Article[];
   feedChanged = new EventEmitter<Article[]>();
 
-  constructor(private fireDatabase: AngularFireDatabase) {
-    this.syncFeed().then(
-      (articles: Article[]) => {
-        this.articles = articles;
-      },
-      (error) => {
-        alert(error);
-      }
-    );
-  }
+  constructor(
+    private fireDatabase: AngularFireDatabase,
+    private fireStorage: AngularFireStorage
+  ) {}
 
   getFeed() {
-    return this.articles;
+    return new Promise((resolve, reject) => {
+      this.syncFeed().then(
+        (articles: Article[]) => {
+          resolve(articles);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
   }
 
   syncFeed() {
@@ -102,5 +108,20 @@ export class FeedService {
           }
         );
     });
+  }
+
+  addCircular(circular: Circular) {
+    return this.fireStorage.storage
+      .ref('/circulars/' + circular.name)
+      .put(circular.file, {
+        customMetadata: {
+          head: circular.head,
+          date: circular.date.toISOString(),
+        },
+      });
+  }
+
+  deleteCircular(name: string) {
+    return this.fireStorage.storage.ref('/circulars/' + name).delete();
   }
 }

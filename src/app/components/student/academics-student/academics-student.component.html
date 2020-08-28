@@ -1,26 +1,28 @@
 <mat-tab-group>
-  <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
   <mat-tab label="Attendance">
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <mat-table *ngIf="!isLoading" [dataSource]="getDataSource()" matSort class="mat-elevation-z2">
+    <h1 *ngIf="hasError" class="mat-elevation-z8">{{error}}</h1>
+    <mat-spinner *ngIf="isLoading&&!hasError"></mat-spinner>
+    <mat-table *ngIf="!isLoading&&!hasError" [dataSource]="getDataSource()" matSort class="mat-elevation-z8">
 
       <!-- Subject Name Definition -->
       <ng-container matColumnDef="sname">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Subject </mat-header-cell>
         <mat-cell *matCellDef="let row"> {{row.sname}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+        <mat-footer-cell *matFooterCellDef> Average </mat-footer-cell>
       </ng-container>
 
       <!-- Present Count Definition -->
       <ng-container matColumnDef="present">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Present </mat-header-cell>
         <mat-cell *matCellDef="let row"> {{row.present}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>
 
       <!-- Total Count Definition -->
       <ng-container matColumnDef="total">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Total </mat-header-cell>
         <mat-cell *matCellDef="let row"> {{row.total}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>
 
       <!-- Percentage Definition -->
@@ -33,7 +35,7 @@
       <!-- Header and Row Declarations -->
       <mat-header-row *matHeaderRowDef="['sname', 'present', 'total','percentage']"></mat-header-row>
       <mat-row *matRowDef="let row; columns: ['sname', 'present', 'total','percentage']"></mat-row>
-      <mat-footer-row *matFooterRowDef="['sname', 'percentage']"></mat-footer-row>
+      <mat-footer-row *matFooterRowDef="['sname', 'present', 'total', 'percentage']"></mat-footer-row>
     </mat-table>
 
   </mat-tab>
