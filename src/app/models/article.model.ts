@@ -1,25 +1,24 @@
-import { formatDate } from '@angular/common';
-
 export class Article {
   head: string;
   body: string;
-  back: string;
   details: string[];
-  link: string[];
+  links: string[];
   date: string;
+  cover: string;
 
   constructor(
     head: string,
     body: string,
-    back: string,
     details: string[],
-    link: string[]
+    links: string[],
+    date: string,
+    cover: string
   ) {
     this.head = head;
     this.body = body;
-    this.back = back;
     this.details = details;
-    this.link = link;
-    this.date = formatDate(new Date(), 'yyyyMMddHHmmss', 'en-IN');
+    this.links = links;
+    this.date = date;
+    this.cover = cover;
   }
 }

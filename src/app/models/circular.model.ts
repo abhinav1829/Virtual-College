@@ -1,16 +1,18 @@
-import { formatDate } from '@angular/common';
-
 export class Circular {
-  file: File;
-  head: string;
-  name: string;
-  date: Date;
+  subject: string;
+  author: string;
+  date: string;
+  downloadUrl: string;
 
-  constructor(head: string, file: File) {
-    this.head = head;
-    this.file = file;
-    let date = new Date();
-    this.name = formatDate(date, 'yyyyMMddHHmmss', 'en-IN');
+  constructor(
+    subject: string,
+    author: string,
+    date: string,
+    downloadUrl: string
+  ) {
+    this.subject = subject;
+    this.author = author;
     this.date = date;
+    this.downloadUrl = downloadUrl;
   }
 }

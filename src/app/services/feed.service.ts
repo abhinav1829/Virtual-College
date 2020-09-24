@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
 
@@ -9,44 +9,29 @@ import { Circular } from '../models/circular.model';
   providedIn: 'root',
 })
 export class FeedService {
-  private articles: Article[];
-  feedChanged = new EventEmitter<Article[]>();
-
   constructor(
     private fireDatabase: AngularFireDatabase,
     private fireStorage: AngularFireStorage
   ) {}
 
-  getFeed() {
+  getArticles() {
     return new Promise((resolve, reject) => {
-      this.syncFeed().then(
-        (articles: Article[]) => {
-          resolve(articles);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  }
-
-  syncFeed() {
-    return new Promise((resolve, reject) => {
-      let articles = [];
+      let articles: Article[] = [];
       this.fireDatabase.database.ref('/articles').once(
         'value',
         (snapshot) => {
           snapshot.forEach((article) => {
-            articles.push({
-              head: article.child('head').val(),
-              body: article.child('body').val(),
-              back: article.child('back').val(),
-              details: article.child('details').val(),
-              link: article.child('link').val(),
-              date: article.key,
-            });
+            articles.push(
+              new Article(
+                article.child('head').val(),
+                article.child('body').val(),
+                article.child('details').val(),
+                article.child('links').val(),
+                article.key,
+                article.child('cover').val()
+              )
+            );
           });
-          this.feedChanged.emit(articles);
           resolve(articles);
         },
         (error) => {
@@ -56,72 +41,68 @@ export class FeedService {
     });
   }
 
-  addArticle(article: Article) {
+  getCirculars() {
     return new Promise((resolve, reject) => {
-      this.fireDatabase.database
-        .ref('/articles/' + article.date)
-        .set({
-          head: article.head,
-          body: article.body,
-          back: article.back,
-          details: article.details,
-          link: article.link,
-        })
-        .then(
-          () => {
-            this.syncFeed().then(
-              (articles: Article[]) => {
-                this.articles = articles;
-                resolve('Article added.');
-              },
-              (error) => {
-                reject(error);
-              }
+      let circulars: Circular[] = [];
+      this.fireDatabase.database.ref('/circulars').once(
+        'value',
+        (snapshot) => {
+          snapshot.forEach((circular) => {
+            circulars.push(
+              new Circular(
+                circular.child('subject').val(),
+                circular.child('author').val(),
+                circular.key,
+                circular.child('downloadUrl').val()
+              )
             );
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
-  }
-
-  deleteArticle(i: number) {
-    return new Promise((resolve, reject) => {
-      this.fireDatabase.database
-        .ref('/articles/' + this.articles[i].date)
-        .remove()
-        .then(
-          () => {
-            this.syncFeed().then(
-              (articles: Article[]) => {
-                this.articles = articles;
-                resolve('Article deleted.');
-              },
-              (error) => {
-                reject(error);
-              }
-            );
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
-  }
-
-  addCircular(circular: Circular) {
-    return this.fireStorage.storage
-      .ref('/circulars/' + circular.name)
-      .put(circular.file, {
-        customMetadata: {
-          head: circular.head,
-          date: circular.date.toISOString(),
+          });
+          resolve(circulars);
         },
-      });
+        (error) => {
+          reject(error.message);
+        }
+      );
+    });
   }
 
-  deleteCircular(name: string) {
-    return this.fireStorage.storage.ref('/circulars/' + name).delete();
+  addArticleStorage(date: string, file: File) {
+    return this.fireStorage.storage.ref('/articles/' + date).put(file);
+  }
+
+  addArticleDatabase(article: Article) {
+    return this.fireDatabase.database.ref('/articles/' + article.date).set({
+      head: article.head,
+      body: article.body,
+      cover: article.cover,
+      details: article.details,
+      links: article.links,
+    });
+  }
+
+  addCircularStorage(date: string, file: File) {
+    return this.fireStorage.storage.ref('/circulars/' + date).put(file);
+  }
+
+  addCircularDatabase(circular: Circular) {
+    return this.fireDatabase.database.ref('/circulars/' + circular.date).set({
+      subject: circular.subject,
+      author: circular.author,
+      downloadUrl: circular.downloadUrl,
+    });
+  }
+
+  deleteArticle(date: string) {
+    return Promise.all([
+      this.fireDatabase.database.ref('/articles/' + date).remove(),
+      this.fireStorage.storage.ref('/articles/' + date).delete(),
+    ]);
+  }
+
+  deleteCircular(date: string) {
+    return Promise.all([
+      this.fireDatabase.database.ref('/circulars/' + date).remove(),
+      this.fireStorage.storage.ref('/circulars/' + date).delete(),
+    ]);
   }
 }

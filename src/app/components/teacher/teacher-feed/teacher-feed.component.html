@@ -1,18 +1,1 @@
-<mat-grid-list cols="3" gutterSize="16px">
-  <mat-grid-tile *ngFor="let article of articles;let i = index" class="mat-elevation-z2">
-    <mat-card (click)="openDialog(i)">
-      <mat-card-header>
-        <img mat-card-avatar [src]="article.back" [alt]="article.back">
-        <mat-card-title>{{article.head}}</mat-card-title>
-        <mat-card-subtitle>{{article.date|date}}</mat-card-subtitle>
-      </mat-card-header>
-      <img mat-card-image [src]="article.back" [alt]="article.back">
-      <mat-card-content>
-        <p>{{article.body}}</p>
-      </mat-card-content>
-      <mat-card-actions (click)="$event.stopPropagation()">
-        <a mat-button [href]="generateJSON(i)" [download]="article.date+'.json'">SAVE</a>
-      </mat-card-actions>
-    </mat-card>
-  </mat-grid-tile>
-</mat-grid-list>
+<h1>Teacher-feed works!</h1>

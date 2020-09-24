@@ -4,6 +4,7 @@ import { FeedService } from 'src/app/services/feed.service';
 import { DialogComponent } from '../../shared/dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Circular } from 'src/app/models/circular.model';
 
 @Component({
   selector: 'app-student-feed',
@@ -12,9 +13,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class StudentFeedComponent implements OnInit {
   isLoading: boolean;
+  circularPanelState: boolean;
   tabs: number[];
   tabSelect: number;
-  private articles: Article[];
+  articles: Article[];
+  circulars: Circular[];
 
   constructor(
     private feedService: FeedService,
@@ -22,27 +25,31 @@ export class StudentFeedComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {
     this.isLoading = false;
+    this.circularPanelState = false;
     this.tabs = [];
     this.tabSelect = 0;
     this.articles = [];
+    this.circulars = [];
   }
 
   ngOnInit() {
     this.isLoading = true;
-    this.feedService
-      .getFeed()
+    this.syncFeed();
+  }
+
+  syncFeed() {
+    Promise.all([
+      this.feedService.getArticles(),
+      this.feedService.getCirculars(),
+    ])
       .then(
-        (articles: Article[]) => {
-          this.articles = articles;
-          this.tabs = [];
-          for (let i = 0; i < (articles.length + 2) / 3; i++) {
-            this.tabs.push(i);
-          }
+        (feed: [Article[], Circular[]]) => {
+          this.articles = feed[0];
+          this.circulars = feed[1];
+          this.tabs = this.getTabs();
           setInterval(() => {
-            this.tabSelect++;
-            if (this.tabSelect >= this.tabs.length) {
-              this.tabSelect = 0;
-            }
+            if (this.tabSelect >= this.tabs.length - 1) this.tabSelect = 0;
+            else this.tabSelect++;
           }, 3000);
         },
         (error) => {
@@ -52,13 +59,14 @@ export class StudentFeedComponent implements OnInit {
       .finally(() => {
         this.isLoading = false;
       });
-    this.feedService.feedChanged.subscribe((articles: Article[]) => {
-      this.articles = articles;
-      this.tabs = [];
-      for (let i = 0; i < (articles.length + 2) / 3; i++) {
-        this.tabs.push(i);
-      }
-    });
+  }
+
+  getTabs() {
+    let tabs = [];
+    for (let i = 0; i < Math.floor((this.articles.length + 2) / 3); i++) {
+      tabs.push(i);
+    }
+    return tabs;
   }
 
   getArticles(tab: number) {
@@ -75,6 +83,19 @@ export class StudentFeedComponent implements OnInit {
     return articles;
   }
 
+  generateJSON(tab: number, i: number) {
+    return this.sanitizer.bypassSecurityTrustUrl(
+      'data:text/json;charset=utf-8,' +
+        encodeURIComponent(
+          JSON.stringify(this.articles[3 * tab + i], (key, value) => {
+            if (key !== 'cover') {
+              return value;
+            }
+          })
+        )
+    );
+  }
+
   onPrev() {
     if (this.tabSelect <= 0) this.tabSelect = this.tabs.length - 1;
     else this.tabSelect--;
@@ -87,18 +108,5 @@ export class StudentFeedComponent implements OnInit {
 
   openDialog(tab: number, i: number) {
     this.dialog.open(DialogComponent, { data: this.articles[3 * tab + i] });
-  }
-
-  generateJSON(tab: number, i: number) {
-    return this.sanitizer.bypassSecurityTrustUrl(
-      'data:text/json;charset=utf-8,' +
-        encodeURIComponent(
-          JSON.stringify(this.articles[3 * tab + i], (key, value) => {
-            if (key !== 'back') {
-              return value;
-            }
-          })
-        )
-    );
   }
 }

@@ -2,7 +2,7 @@
   <mat-tab label="Attendance">
     <h1 *ngIf="hasError" class="mat-elevation-z8">{{error}}</h1>
     <mat-spinner *ngIf="isLoading&&!hasError"></mat-spinner>
-    <mat-table *ngIf="!isLoading&&!hasError" [dataSource]="getDataSource()" matSort class="mat-elevation-z8">
+    <mat-table *ngIf="!isLoading&&!hasError" [dataSource]="getAttendanceSource()" matSort class="mat-elevation-z8">
 
       <!-- Subject Name Definition -->
       <ng-container matColumnDef="sname">
@@ -28,7 +28,7 @@
       <!-- Percentage Definition -->
       <ng-container matColumnDef="percentage">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Percentage </mat-header-cell>
-        <mat-cell *matCellDef="let row"> {{row.percentage|attendance}} </mat-cell>
+        <mat-cell *matCellDef="let row"> {{row.percentage===-1?'NA':row.percentage|attendance}} </mat-cell>
         <mat-footer-cell *matFooterCellDef> {{getTotalPercentage()|attendance}} </mat-footer-cell>
       </ng-container>
 
@@ -40,7 +40,72 @@
 
   </mat-tab>
   <mat-tab label="Reports">
-    <h1>Reports</h1>
+    <h1 *ngIf="hasError" class="mat-elevation-z8">{{error}}</h1>
+    <mat-spinner *ngIf="isLoading&&!hasError"></mat-spinner>
+    <mat-table *ngIf="!isLoading&&!hasError" [dataSource]="getReportSource()" class="mat-elevation-z8">
+
+      <!-- Subject Name Definition -->
+      <ng-container matColumnDef="sname">
+        <mat-header-cell *matHeaderCellDef> Subject </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.sname}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+      </ng-container>
+
+      <!-- Insem Count Definition -->
+      <ng-container matColumnDef="insem">
+        <mat-header-cell *matHeaderCellDef> Insem </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.total[0]===-1?'-':(row.marks[0]===-1?'NA':row.marks[0]+'/'+row.total[0])}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalMarks(0)}}/{{getTotalTotal(0)}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Endsem Definition -->
+      <ng-container matColumnDef="endsem">
+        <mat-header-cell *matHeaderCellDef> Endsem </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.total[1]===-1?'-':(row.marks[1]===-1?'NA':row.marks[1]+'/'+row.total[1])}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalMarks(1)}}/{{getTotalTotal(1)}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Termwork Definition -->
+      <ng-container matColumnDef="termwork">
+        <mat-header-cell *matHeaderCellDef> Termwork </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.total[2]===-1?'-':(row.marks[2]===-1?'NA':row.marks[2]+'/'+row.total[2])}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalMarks(2)}}/{{getTotalTotal(2)}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Practical Definition -->
+      <ng-container matColumnDef="practical">
+        <mat-header-cell *matHeaderCellDef> Practical </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.total[3]===-1?'-':(row.marks[3]===-1?'NA':row.marks[3]+'/'+row.total[3])}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalMarks(3)}}/{{getTotalTotal(3)}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Oral Definition -->
+      <ng-container matColumnDef="oral">
+        <mat-header-cell *matHeaderCellDef> Oral </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row.total[4]===-1?'-':(row.marks[4]===-1?'NA':row.marks[4]+'/'+row.total[4])}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{getTotalMarks(4)}}/{{getTotalTotal(4)}} </mat-footer-cell>
+      </ng-container>
+
+      <!-- Total Definition -->
+      <ng-container matColumnDef="total">
+        <mat-header-cell *matHeaderCellDef> Total </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{getMarks(row)}}/{{getTotal(row)}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+
+      <!-- Header and Row Declarations -->
+      <mat-header-row *matHeaderRowDef="['sname','insem','endsem','termwork','practical','oral','total']">
+      </mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['sname','insem','endsem','termwork','practical','oral','total']">
+      </mat-row>
+      <mat-footer-row *matFooterRowDef="['sname','insem','endsem','termwork','practical','oral','total']">
+      </mat-footer-row>
+    </mat-table>
   </mat-tab>
   <mat-tab label="Schedule">
     <h1>Schedule</h1>

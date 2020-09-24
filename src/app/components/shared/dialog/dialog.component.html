@@ -2,7 +2,7 @@
 <mat-dialog-content class="mat-typography">
   <h3>{{article.body}}</h3>
   <p *ngFor="let details of article.details">{{details}}</p>
-  <a *ngFor="let link of article.link" [href]="link">{{link}}<br></a>
+  <a *ngFor="let link of article.links" [href]="link" target="_blank">{{link}}<br></a>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close cdkFocusInitial>Close</button>

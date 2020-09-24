@@ -8,6 +8,6 @@ export class Attendance {
     this.sname = sname;
     this.present = present;
     this.total = total;
-    this.percentage = (present / total) * 100;
+    this.percentage = total === 0 ? -1 : (present / total) * 100;
   }
 }

@@ -1,24 +1,70 @@
-<mat-tab-group [(selectedIndex)]="tabSelect">
+<mat-tab-group [(selectedIndex)]="mainTabSelect">
   <mat-tab label="View">
-    <mat-grid-list cols="3" gutterSize="16px">
-      <mat-grid-tile *ngFor="let article of articles;let i = index" class="mat-elevation-z2">
-        <mat-card (click)="openDialog(i)">
-          <mat-card-header>
-            <img mat-card-avatar [src]="article.back" [alt]="article.back">
-            <mat-card-title>{{article.head}}</mat-card-title>
-            <mat-card-subtitle>{{article.date|date}}</mat-card-subtitle>
-          </mat-card-header>
-          <img mat-card-image [src]="article.back" [alt]="article.back">
-          <mat-card-content>
-            <p>{{article.body}}</p>
-          </mat-card-content>
-          <mat-card-actions (click)="$event.stopPropagation()">
-            <button mat-button (click)="onDeleteArticle(i)">DELETE</button>
-          </mat-card-actions>
-        </mat-card>
-      </mat-grid-tile>
-    </mat-grid-list>
+
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+
+    <div *ngIf="!isLoading&&tabs.length>0" class="mattabcontainer">
+
+      <button class="tab-change-btn" (click)="onPrev()">
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+
+      <mat-tab-group [(selectedIndex)]="tabSelect">
+        <mat-tab *ngFor="let x of tabs">
+          <mat-grid-list cols="3" gutterSize="16px">
+            <mat-grid-tile *ngFor="let article of getArticles(x);let i = index" class="mat-elevation-z2">
+              <mat-card (click)="openDialog(x,i)">
+                <mat-card-header>
+                  <img mat-card-avatar [src]="article.cover" [alt]="article.cover">
+                  <mat-card-title>{{article.head}}</mat-card-title>
+                  <mat-card-subtitle>{{article.date|date}}</mat-card-subtitle>
+                </mat-card-header>
+                <img mat-card-image [src]="article.cover" [alt]="article.cover">
+                <mat-card-content>
+                  <p class="article-body">{{article.body}}</p>
+                </mat-card-content>
+                <mat-card-actions (click)="$event.stopPropagation()">
+                  <a mat-button [href]="generateJSON(x,i)" [download]="article.date+'.json'">SAVE</a>
+                  <button mat-button (click)="onDeleteArticle(article.date,x,i)">DELETE</button>
+                </mat-card-actions>
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-tab>
+      </mat-tab-group>
+
+      <button class="tab-change-btn" (click)="onNext()">
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+
+    </div>
+
+    <mat-expansion-panel *ngIf="!isLoading" (opened)="circularPanelState = true"
+    (closed)="circularPanelState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Circulars
+        </mat-panel-title>
+        <mat-panel-description>
+          Click to {{circularPanelState ? 'close' : 'expand'}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <mat-list-item *ngFor="let circular of circulars;let i = index" class="mat-elevation-z2">
+          <h3 matLine>{{circular.subject}} - {{circular.author}}</h3>
+          <p matLine>{{circular.date|date}}</p>
+          <button mat-icon-button (click)="onDeleteCircular(circular.date,i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <a [href]="circular.downloadUrl" target="_blank">
+            <mat-icon matListIcon>get_app</mat-icon>
+          </a>
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+
   </mat-tab>
+
   <mat-tab label="Add Article">
     <form [formGroup]="articleForm" (ngSubmit)="onArticleSubmit()" class="mat-elevation-z8">
       <mat-form-field>
@@ -31,23 +77,28 @@
         <textarea matInput type="text" formControlName="details" placeholder="details" rows="7"></textarea>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="text" formControlName="back" placeholder="image">
+        <input matInput type="text" formControlName="links" placeholder="links separated by ' '">
       </mat-form-field>
-      <mat-form-field>
-        <input matInput type="text" formControlName="link" placeholder="links separated by ' '">
-      </mat-form-field>
+      <input type="file" (change)="detectImage($event)" style="margin-bottom: 16px;">
+      <mat-progress-bar mode="determinate" [value]="progressArticle" *ngIf="progressArticle > 0">
+      </mat-progress-bar>
       <button mat-raised-button type="submit">Add Article</button>
     </form>
   </mat-tab>
+
   <mat-tab label="Add Circular">
     <form [formGroup]="circularForm" (ngSubmit)="onCircularSubmit()" class="mat-elevation-z8">
       <mat-form-field>
-        <input matInput type="text" formControlName="subject" placeholder="heading">
+        <input matInput type="text" formControlName="subject" placeholder="Subject">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="text" formControlName="author" placeholder="Author">
       </mat-form-field>
       <input type="file" (change)="detectFile($event)" style="margin-bottom: 16px;">
-      <mat-progress-bar mode="determinate" [value]="progress" *ngIf="progress > 0">
+      <mat-progress-bar mode="determinate" [value]="progressCircular" *ngIf="progressCircular > 0">
       </mat-progress-bar>
       <button mat-raised-button type="submit">Add Circular</button>
     </form>
   </mat-tab>
+
 </mat-tab-group>
