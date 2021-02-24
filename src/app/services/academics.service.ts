@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { Attendance } from '../models/attendance.model';
 import { Report } from '../models/report.model';
 import { Student } from '../models/student.model';
+import { Syllabus } from '../models/syllabus.model';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +33,7 @@ export class AcademicsService {
               Promise.all([
                 this.syncAttendance(student),
                 this.syncReport(student),
+                this.syncSyllabi(student),
               ])
             );
           },
@@ -48,11 +50,11 @@ export class AcademicsService {
       this.fireDatabase.database.ref('/students/' + this.authService.id).once(
         'value',
         (snapshot) => {
-          let a: { sname: string; present: number }[] = [];
+          let attendance: { sname: string; present: number }[] = [];
           let report: Report[][] = new Array<Report[]>(5);
           let elements = ['insem', 'endsem', 'termwork', 'practical', 'oral'];
           snapshot.child('attendance').forEach((subject) => {
-            a.push({ sname: subject.key, present: subject.val() });
+            attendance.push({ sname: subject.key, present: subject.val() });
           });
           for (const [index, value] of elements.entries()) {
             report[index] = [];
@@ -67,7 +69,7 @@ export class AcademicsService {
               snapshot.child('email').val(),
               snapshot.child('department').val(),
               snapshot.child('semester').val(),
-              a,
+              attendance,
               report
             )
           );
@@ -88,13 +90,12 @@ export class AcademicsService {
         .once(
           'value',
           (snapshot) => {
-            let a = student.attendance;
             let i = 0;
             snapshot.forEach((subject) => {
               attendance.push(
                 new Attendance(
-                  a[i].sname,
-                  a[i].present,
+                  student.attendance[i].sname,
+                  student.attendance[i].present,
                   subject.child('total').val()
                 )
               );
@@ -146,6 +147,50 @@ export class AcademicsService {
             reject(error.message);
           }
         );
+    });
+  }
+
+  syncSyllabi(student: Student) {
+    return new Promise((resolve, reject) => {
+      let syllabi: Syllabus[] = [];
+      this.fireDatabase.database.ref('/syllabi').once(
+        'value',
+        (snapshot) => {
+          snapshot.forEach((department) => {
+            syllabi.push(
+              new Syllabus(
+                department.child('department').val(),
+                department.child('description').val(),
+                department.hasChild('1')
+                  ? [
+                      {
+                        name: department.child('0/name').val(),
+                        downloadUrl: department.child('0/link').val(),
+                      },
+                      {
+                        name: department.child('1/name').val(),
+                        downloadUrl: department.child('1/link').val(),
+                      },
+                      {
+                        name: department.child('2/name').val(),
+                        downloadUrl: department.child('2/link').val(),
+                      },
+                    ]
+                  : [
+                      {
+                        name: department.child('0/name').val(),
+                        downloadUrl: department.child('0/link').val(),
+                      },
+                    ]
+              )
+            );
+          });
+          resolve(syllabi);
+        },
+        (error) => {
+          reject(error.message);
+        }
+      );
     });
   }
 }

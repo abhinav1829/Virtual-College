@@ -107,10 +107,26 @@
       </mat-footer-row>
     </mat-table>
   </mat-tab>
-  <mat-tab label="Schedule">
-    <h1>Schedule</h1>
-  </mat-tab>
-  <mat-tab label="Syllabus">
-    <h1>Syllabus</h1>
+  <mat-tab label="Syllabus & Schedule">
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let department of getSyllabi()" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ department.name }}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ department.description }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item *ngFor="let syllabus of department.syllabus" class="mat-elevation-z2">
+            <h3 matLine>{{syllabus.name}}</h3>
+            <a [href]="syllabus.downloadUrl" target="_blank">
+              <mat-icon matListIcon>get_app</mat-icon>
+            </a>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-tab>
 </mat-tab-group>

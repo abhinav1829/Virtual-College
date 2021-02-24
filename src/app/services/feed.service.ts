@@ -4,6 +4,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 import { Article } from '../models/article.model';
 import { Circular } from '../models/circular.model';
+import { Syllabus } from '../models/syllabus.model';
 
 @Injectable({
   providedIn: 'root',

@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { Attendance } from 'src/app/models/attendance.model';
 import { Report } from 'src/app/models/report.model';
+import { Syllabus } from 'src/app/models/syllabus.model';
 
 @Component({
   selector: 'app-academics-student',
@@ -31,6 +32,8 @@ export class AcademicsStudentComponent implements OnInit {
     total: number[];
   }>();
 
+  private syllabi: Syllabus[];
+
   @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
     this.attendanceDataSource.sort = sort;
   }
@@ -43,7 +46,7 @@ export class AcademicsStudentComponent implements OnInit {
     this.academicsService
       .getData()
       .then(
-        (data: [Attendance[], Report[][]]) => {
+        (data: [Attendance[], Report[][], Syllabus[]]) => {
           this.attendance = data[0];
           this.attendanceDataSource = new MatTableDataSource<Attendance>(
             this.attendance
@@ -54,6 +57,7 @@ export class AcademicsStudentComponent implements OnInit {
             marks: number[];
             total: number[];
           }>(this.final_report);
+          this.syllabi = data[2];
         },
         (error) => {
           this.hasError = true;
@@ -71,6 +75,10 @@ export class AcademicsStudentComponent implements OnInit {
 
   getReportSource() {
     return this.final_report;
+  }
+
+  getSyllabi() {
+    return this.syllabi;
   }
 
   getTotalPercentage() {

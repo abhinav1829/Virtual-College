@@ -1,20 +1,25 @@
-mat-tab-group {
-  height: 100%;
-}
-
-mat-table {
+.mat-expanded {
   margin: 16px;
 }
 
-mat-sort-header-sorted {
-  color: black;
+:host ::ng-deep .mat-tab-body-content {
+  padding: 16px;
 }
 
-mat-footer-row {
+:host ::ng-deep .mat-tab-body-content mat-footer-row {
   font-weight: bold;
 }
 
-h1 {
-  margin: 16px;
-  padding: 16px;
+mat-tab-group,
+:host ::ng-deep .mat-tab-body-wrapper,
+mat-tab-body {
+  height: 100%;
+}
+
+mat-expansion-panel {
+  margin: 8px 0;
+}
+
+mat-list-item {
+  margin: 4px 0;
 }
